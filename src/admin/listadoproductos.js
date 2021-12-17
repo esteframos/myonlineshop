@@ -10,27 +10,34 @@ import axios from 'axios';
 
 export function ListadoProductos() {
 
+
     const [productos, setProductos] = useState([]);
+    const [productostotal, setProductostotal] = useState([]);
+
+    useEffect(() => {
+      load_data()
+    }, [])
 
     let textInput = React.createRef();
 
-    axios.get('https://ecomerce-master.herokuapp.com/api/v1/item')
-    .then(res => {
-      let data = res.data;
-      data = data.slice({});
-      setProductos(data);
-    });
+    const load_data = () => {
+      axios.get('https://ecomerce-master.herokuapp.com/api/v1/item')
+      .then(res => {
+        let data = res.data;
+        let data_ = data.slice(150,170);
+        setProductos(data_);
+        setProductostotal(data);
+      });
+  
+    }
 
     const handleBusqueda = () => {
       if(textInput.current.value != ""){
-        //search value in product object
-        
 
-        let data_p = productos.findIndex(x => x.product_name == textInput.current.value );
-        console.log(data_p);
+        let quickResult = productostotal.filter(obj => Object.values(obj).some(val => val?val.toString().toLowerCase().includes(textInput.current.value):false));
+        setProductos( quickResult );
       }
     };
-
 
   return (
     <>
